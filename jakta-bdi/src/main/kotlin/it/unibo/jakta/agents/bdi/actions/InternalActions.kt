@@ -1,6 +1,7 @@
 package it.unibo.jakta.agents.bdi.actions
 
 import it.unibo.jakta.agents.bdi.actions.impl.AbstractInternalAction
+import it.unibo.tuprolog.core.Numeric
 import it.unibo.tuprolog.core.Substitution
 
 object InternalActions {
@@ -42,11 +43,21 @@ object InternalActions {
         }
     }
 
+    object Random : AbstractInternalAction("random", 1) {
+        override fun action(request: InternalRequest) {
+            if (request.arguments[0].isVar) {
+                val variable = request.arguments[0].castToVar()
+                addResults(Substitution.of(variable, Numeric.of(kotlin.random.Random.nextInt())))
+            }
+        }
+    }
+
     fun default() = mapOf(
         Print.signature.name to Print,
         Fail.signature.name to Fail,
         Stop.signature.name to Stop,
         Pause.signature.name to Pause,
         Sleep.signature.name to Sleep,
+        Random.signature.name to Random,
     )
 }
