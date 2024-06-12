@@ -43,21 +43,37 @@ object InternalActions {
         }
     }
 
-    object Random : AbstractInternalAction("random", 1) {
+    class Random : AbstractInternalAction("random", 1) {
+        var generator: kotlin.random.Random = kotlin.random.Random
         override fun action(request: InternalRequest) {
             if (request.arguments[0].isVar) {
                 val variable = request.arguments[0].castToVar()
-                addResults(Substitution.of(variable, Numeric.of(kotlin.random.Random.nextDouble(0.0, 1.0))))
+                addResults(Substitution.of(variable, Numeric.of(generator.nextDouble())))
             }
         }
     }
 
-    fun default() = mapOf(
-        Print.signature.name to Print,
-        Fail.signature.name to Fail,
-        Stop.signature.name to Stop,
-        Pause.signature.name to Pause,
-        Sleep.signature.name to Sleep,
-        Random.signature.name to Random,
-    )
+    class RandomSeed(randomAction: Random) : AbstractInternalAction("randomSeed", 1) {
+        private var random = randomAction
+        override fun action(request: InternalRequest) {
+            if (request.arguments[0].isInteger) {
+                val seed = request.arguments[0].castToInteger().value.toLong()
+                random.generator = kotlin.random.Random(seed)
+            }
+        }
+    }
+
+    fun default() {
+        val random = Random()
+        val randomSeed = RandomSeed(random)
+        mapOf(
+            Print.signature.name to Print,
+            Fail.signature.name to Fail,
+            Stop.signature.name to Stop,
+            Pause.signature.name to Pause,
+            Sleep.signature.name to Sleep,
+            random.signature.name to random,
+            randomSeed.signature.name to randomSeed,
+        )
+    }
 }
