@@ -1,3 +1,129 @@
+## [0.11.1](https://github.com/jakta-bdi/jakta/compare/v0.11.0...v0.11.1) (2024-06-11)
+
+
+### Bug Fixes
+
+* **deps:** update plugin tasktree to v4 ([b02ffa8](https://github.com/jakta-bdi/jakta/commit/b02ffa8e71039901a5db52b4f0fc43db9f1e89c4))
+
+# [0.11.0](https://github.com/jakta-bdi/jakta/compare/v0.10.16...v0.11.0) (2024-06-10)
+
+
+### Features
+
+* change jakta entrypoint for alchemist incarnation from `mas` to `device` ([886be0d](https://github.com/jakta-bdi/jakta/commit/886be0dcd3f6ea4a8c67a2250012d8f7233b10f1))
+
+## [0.10.16](https://github.com/jakta-bdi/jakta/compare/v0.10.15...v0.10.16) (2024-06-08)
+
+
+### Bug Fixes
+
+* **deps:** update anitvam/conventionalcommit-semantic-releasing action to v0.7.25 ([2dcd8c4](https://github.com/jakta-bdi/jakta/commit/2dcd8c491886dd66ad4ef71167e7642dd02ba4a8))
+
+## [0.10.15](https://github.com/jakta-bdi/jakta/compare/v0.10.14...v0.10.15) (2024-06-07)
+
+
+### Bug Fixes
+
+* **deps:** update plugin publishoncentral to v5.1.3 ([cf601ca](https://github.com/jakta-bdi/jakta/commit/cf601ca6a93998e21782a5d90948d38c05415b18))
+
+## [0.10.14](https://github.com/jakta-bdi/jakta/compare/v0.10.13...v0.10.14) (2024-06-06)
+
+
+### Bug Fixes
+
+* **deps:** update kotest to v5.9.1 ([e59bccb](https://github.com/jakta-bdi/jakta/commit/e59bccb2c404323a88cfacd9e7a4c9a6811d505f))
+
+## [0.10.13](https://github.com/jakta-bdi/jakta/compare/v0.10.12...v0.10.13) (2024-06-06)
+
+
+### Bug Fixes
+
+* **deps:** update alchemist to v34.0.13 ([c195d2c](https://github.com/jakta-bdi/jakta/commit/c195d2cd18a041bd83221a21bc55e1c456c9a15b))
+
+## [0.10.12](https://github.com/jakta-bdi/jakta/compare/v0.10.11...v0.10.12) (2024-06-06)
+
+
+### Bug Fixes
+
+* **deps:** update plugin kotlin-qa to v0.62.3 ([48f3330](https://github.com/jakta-bdi/jakta/commit/48f3330523dbc57d25c05d96acfb445db772b63e))
+
+## [0.10.11](https://github.com/jakta-bdi/jakta/compare/v0.10.10...v0.10.11) (2024-06-06)
+
+
+### Bug Fixes
+
+* **deps:** update alchemist to v34.0.10 ([feb9769](https://github.com/jakta-bdi/jakta/commit/feb97691cb36da93880f91904ead1e3f93eeceb2))
+
+## [0.10.10](https://github.com/jakta-bdi/jakta/compare/v0.10.9...v0.10.10) (2024-06-05)
+
+
+### Bug Fixes
+
+* **deps:** update alchemist to v34.0.8 ([2947b41](https://github.com/jakta-bdi/jakta/commit/2947b410eefd18a25a24a6598faf723c14fa6822))
+
+## [0.10.9](https://github.com/jakta-bdi/jakta/compare/v0.10.8...v0.10.9) (2024-06-04)
+
+
+### Bug Fixes
+
+* **deps:** update anitvam/conventionalcommit-semantic-releasing action to v0.7.24 ([f15fdc1](https://github.com/jakta-bdi/jakta/commit/f15fdc1a842dbbf0f41a5514205d98482d2374e0))
+
+## [0.10.8](https://github.com/jakta-bdi/jakta/compare/v0.10.7...v0.10.8) (2024-06-04)
+
+
+### Bug Fixes
+
+* **deps:** update anitvam/conventionalcommit-semantic-releasing action to v0.7.22 ([6bd36fa](https://github.com/jakta-bdi/jakta/commit/6bd36fa141e0661406042ce3f02872296389c2e4))
+
+## [0.10.7](https://github.com/jakta-bdi/jakta/compare/v0.10.6...v0.10.7) (2024-06-02)
+
+
+### Bug Fixes
+
+* **deps:** update dependency gradle to v8.8 ([3eb810a](https://github.com/jakta-bdi/jakta/commit/3eb810a6269bce34b18c945f6df15b405e672b7b))
+
+## [0.10.6](https://github.com/jakta-bdi/jakta/compare/v0.10.5...v0.10.6) (2024-06-01)
+
+
+### Bug Fixes
+
+* **deps:** update plugin publishoncentral to v5.1.2 ([d8bdf63](https://github.com/jakta-bdi/jakta/commit/d8bdf6313e021e4558c70c0ed37ec28939d3a139))
+
+## [0.10.5](https://github.com/jakta-bdi/jakta/compare/v0.10.4...v0.10.5) (2024-06-01)
+
+
+### Bug Fixes
+
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v2.0.7 ([8b889d2](https://github.com/jakta-bdi/jakta/commit/8b889d28efd24289bf4bd18febcadbb5b027e2a1))
+
+## [0.10.4](https://github.com/jakta-bdi/jakta/compare/v0.10.3...v0.10.4) (2024-06-01)
+
+
+### Bug Fixes
+
+* **deps:** update plugin kotlin-qa to v0.62.1 ([3b05ef8](https://github.com/jakta-bdi/jakta/commit/3b05ef81f659faa0e783cd0fda0e1e556dbc1595))
+
+## [0.10.3](https://github.com/jakta-bdi/jakta/compare/v0.10.2...v0.10.3) (2024-06-01)
+
+
+### Bug Fixes
+
+* **deps:** update plugin gitsemver to v3.1.7 ([7d18fdb](https://github.com/jakta-bdi/jakta/commit/7d18fdbcedd9814cbc93342cce8dc1a33a587efb))
+
+## [0.10.2](https://github.com/jakta-bdi/jakta/compare/v0.10.1...v0.10.2) (2024-05-31)
+
+
+### Performance Improvements
+
+* performance boost ([cf80772](https://github.com/jakta-bdi/jakta/commit/cf80772aa2dbbf50ce860b16c7ab17c4ebf3572e))
+
+## [0.10.1](https://github.com/jakta-bdi/jakta/compare/v0.10.0...v0.10.1) (2024-05-30)
+
+
+### Bug Fixes
+
+* **deps:** update alchemist to v34.0.7 ([f3a4872](https://github.com/jakta-bdi/jakta/commit/f3a4872597ad8e853640f5bceedff4ce3f9786f1))
+
 # [0.10.0](https://github.com/jakta-bdi/jakta/compare/v0.9.29...v0.10.0) (2024-05-28)
 
 
