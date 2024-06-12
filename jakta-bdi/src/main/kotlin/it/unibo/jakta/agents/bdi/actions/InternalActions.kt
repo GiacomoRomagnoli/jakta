@@ -47,7 +47,7 @@ object InternalActions {
         override fun action(request: InternalRequest) {
             if (request.arguments[0].isVar) {
                 val variable = request.arguments[0].castToVar()
-                addResults(Substitution.of(variable, Numeric.of(kotlin.random.Random.nextInt())))
+                addResults(Substitution.of(variable, Numeric.of(kotlin.random.Random.nextDouble(0.0, 1.0))))
             }
         }
     }
