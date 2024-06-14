@@ -63,10 +63,10 @@ object InternalActions {
         }
     }
 
-    fun default() {
+    fun default(): Map<String, InternalAction> {
         val random = Random()
         val randomSeed = RandomSeed(random)
-        mapOf(
+        return mapOf(
             Print.signature.name to Print,
             Fail.signature.name to Fail,
             Stop.signature.name to Stop,
