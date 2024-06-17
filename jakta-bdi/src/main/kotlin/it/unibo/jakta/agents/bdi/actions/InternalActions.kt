@@ -3,6 +3,8 @@ package it.unibo.jakta.agents.bdi.actions
 import it.unibo.jakta.agents.bdi.actions.impl.AbstractInternalAction
 import it.unibo.tuprolog.core.Numeric
 import it.unibo.tuprolog.core.Substitution
+import it.unibo.tuprolog.core.Term
+import it.unibo.tuprolog.core.parsing.parse
 
 object InternalActions {
     object Print : AbstractInternalAction("print", 2) {
@@ -103,6 +105,26 @@ object InternalActions {
         }
     }
 
+    object Type : AbstractInternalAction("type", 2) {
+        override fun action(request: InternalRequest) {
+            if (request.arguments[1].isVar) {
+                val type = request.arguments[1].castToVar()
+                val term = request.arguments[0]
+                when {
+                    term.isNumber -> addResults(Substitution.of(type, Term.parse("number")))
+                    term.isAtom -> addResults(Substitution.of(type, Term.parse("atom")))
+                    term.isVar -> addResults(Substitution.of(type, Term.parse("variable")))
+                    term.isList -> addResults(Substitution.of(type, Term.parse("list")))
+                    term.isTuple -> addResults(Substitution.of(type, Term.parse("tuple")))
+                    term.isIndicator -> addResults(Substitution.of(type, Term.parse("indicator")))
+                    term.isClause -> addResults(Substitution.of(type, Term.parse("clause")))
+                    term.isStruct -> addResults(Substitution.of(type, Term.parse("structure")))
+                    else -> addResults(Substitution.of(type, Term.parse("unknown")))
+                }
+            }
+        }
+    }
+
     fun default(): Map<String, InternalAction> {
         val random = Random()
         val randomSeed = RandomSeed(random)
@@ -118,6 +140,7 @@ object InternalActions {
             Structure.signature.name to Structure,
             Ground.signature.name to Ground,
             Number.signature.name to Number,
+            Type.signature.name to Type,
         )
     }
 }
