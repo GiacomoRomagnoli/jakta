@@ -79,6 +79,14 @@ object InternalActions {
         }
     }
 
+    object List : AbstractInternalAction("list", 1) {
+        override fun action(request: InternalRequest) {
+            if (!request.arguments[0].isList) {
+                addResults(Substitution.failed())
+            }
+        }
+    }
+
     fun default(): Map<String, InternalAction> {
         val random = Random()
         val randomSeed = RandomSeed(random)
