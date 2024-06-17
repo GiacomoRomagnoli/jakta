@@ -63,6 +63,14 @@ object InternalActions {
         }
     }
 
+    object Atom : AbstractInternalAction("atom", 1) {
+        override fun action(request: InternalRequest) {
+            if (!request.arguments[0].isAtom) {
+                addResults(Substitution.failed())
+            }
+        }
+    }
+
     fun default(): Map<String, InternalAction> {
         val random = Random()
         val randomSeed = RandomSeed(random)
@@ -74,6 +82,7 @@ object InternalActions {
             Sleep.signature.name to Sleep,
             random.signature.name to random,
             randomSeed.signature.name to randomSeed,
+            Atom.signature.name to Atom,
         )
     }
 }
