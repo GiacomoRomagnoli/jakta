@@ -1,3 +1,31 @@
+## [0.11.5](https://github.com/jakta-bdi/jakta/compare/v0.11.4...v0.11.5) (2024-06-25)
+
+
+### Bug Fixes
+
+* **deps:** update anitvam/conventionalcommit-semantic-releasing action to v0.7.27 ([9ebd284](https://github.com/jakta-bdi/jakta/commit/9ebd2849faf10a4d7492fc1a6d2e4e5b73c0d777))
+
+## [0.11.4](https://github.com/jakta-bdi/jakta/compare/v0.11.3...v0.11.4) (2024-06-13)
+
+
+### Bug Fixes
+
+* **deps:** update danysk/action-checkout action to v0.2.19 ([7591098](https://github.com/jakta-bdi/jakta/commit/7591098dd524380024ff9aac41a71938ee8dd9c3))
+
+## [0.11.3](https://github.com/jakta-bdi/jakta/compare/v0.11.2...v0.11.3) (2024-06-13)
+
+
+### Bug Fixes
+
+* **deps:** update anitvam/conventionalcommit-semantic-releasing action to v0.7.26 ([f977657](https://github.com/jakta-bdi/jakta/commit/f977657f87e3635ecce579d549897ee9c27a56e3))
+
+## [0.11.2](https://github.com/jakta-bdi/jakta/compare/v0.11.1...v0.11.2) (2024-06-12)
+
+
+### Bug Fixes
+
+* **deps:** update actions/checkout action to v4.1.7 ([a95b3f7](https://github.com/jakta-bdi/jakta/commit/a95b3f7bd4aac9062bdbf7ac89537c5595f133dc))
+
 ## [0.11.1](https://github.com/jakta-bdi/jakta/compare/v0.11.0...v0.11.1) (2024-06-11)
 
 
