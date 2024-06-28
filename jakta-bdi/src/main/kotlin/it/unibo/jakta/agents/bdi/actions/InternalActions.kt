@@ -4,6 +4,7 @@ import it.unibo.jakta.agents.bdi.actions.impl.AbstractInternalAction
 import it.unibo.tuprolog.core.Numeric
 import it.unibo.tuprolog.core.Substitution
 import it.unibo.tuprolog.core.Term
+import it.unibo.tuprolog.core.Truth
 import it.unibo.tuprolog.core.parsing.parse
 
 object InternalActions {
@@ -125,6 +126,20 @@ object InternalActions {
         }
     }
 
+    object Eval : AbstractInternalAction("eval", 2) {
+        override fun action(request: InternalRequest) {
+            if (request.arguments[0].isVar) {
+                val value = request.arguments[0].castToVar()
+                val expression = request.arguments[1].castToStruct()
+                val solution = request.agent.context.beliefBase.solve(expression)
+                when (solution.isYes) {
+                    true -> addResults(Substitution.of(value, Truth.TRUE))
+                    false -> addResults(Substitution.of(value, Truth.FALSE))
+                }
+            }
+        }
+    }
+
     fun default(): Map<String, InternalAction> {
         val random = Random()
         val randomSeed = RandomSeed(random)
@@ -141,6 +156,7 @@ object InternalActions {
             Ground.signature.name to Ground,
             Number.signature.name to Number,
             Type.signature.name to Type,
+            Eval.signature.name to Eval,
         )
     }
 }
