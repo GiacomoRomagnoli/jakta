@@ -2,6 +2,7 @@ package it.unibo.jakta.agents.bdi.actions
 
 import it.unibo.jakta.agents.bdi.actions.impl.AbstractInternalAction
 import it.unibo.tuprolog.core.Numeric
+import it.unibo.tuprolog.core.Struct
 import it.unibo.tuprolog.core.Substitution
 import it.unibo.tuprolog.core.Term
 import it.unibo.tuprolog.core.Truth
@@ -140,6 +141,32 @@ object InternalActions {
         }
     }
 
+    object AddSource : AbstractInternalAction("add_source", 3) {
+        private fun apply(term: Struct, source: it.unibo.tuprolog.core.Atom) =
+            term.addFirst(Struct.of("source", source))
+
+        override fun action(request: InternalRequest) {
+            if (request.arguments[1].isAtom && request.arguments[2].isVar) {
+                val source = request.arguments[1].castToAtom()
+                val result = request.arguments[2].castToVar()
+                if (request.arguments[0].isList) {
+                    val beliefs = request.arguments[0].castToList().unfoldedList
+                    val beliefsWithSource = beliefs.flatMap {
+                        if (it.isStruct && !it.isEmptyList) {
+                            listOf(apply(it.castToStruct(), source))
+                        } else {
+                            listOf()
+                        }
+                    }
+                    addResults(Substitution.of(result, it.unibo.tuprolog.core.List.of(beliefsWithSource)))
+                } else if (request.arguments[0].isStruct) {
+                    val belief = request.arguments[0].castToStruct()
+                    addResults(Substitution.of(result, apply(belief, source)))
+                }
+            }
+        }
+    }
+
     fun default(): Map<String, InternalAction> {
         val random = Random()
         val randomSeed = RandomSeed(random)
@@ -157,6 +184,7 @@ object InternalActions {
             Number.signature.name to Number,
             Type.signature.name to Type,
             Eval.signature.name to Eval,
+            AddSource.signature.name to AddSource,
         )
     }
 }
