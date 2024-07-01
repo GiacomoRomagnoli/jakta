@@ -167,6 +167,15 @@ object InternalActions {
         }
     }
 
+    object MyName : AbstractInternalAction("my_name", 1) {
+        override fun action(request: InternalRequest) {
+            if (request.arguments[0].isVar) {
+                val myName = request.arguments[0].castToVar()
+                addResults(Substitution.of(myName, Term.parse(request.agent.name)))
+            }
+        }
+    }
+
     fun default(): Map<String, InternalAction> {
         val random = Random()
         val randomSeed = RandomSeed(random)
@@ -185,6 +194,7 @@ object InternalActions {
             Type.signature.name to Type,
             Eval.signature.name to Eval,
             AddSource.signature.name to AddSource,
+            MyName.signature.name to MyName,
         )
     }
 }
