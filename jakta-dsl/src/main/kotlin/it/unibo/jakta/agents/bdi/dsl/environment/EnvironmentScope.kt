@@ -1,5 +1,6 @@
 package it.unibo.jakta.agents.bdi.dsl.environment
 
+import it.unibo.jakta.agents.bdi.actions.ExternalActions
 import it.unibo.jakta.agents.bdi.dsl.Builder
 import it.unibo.jakta.agents.bdi.dsl.actions.ExternalActionsScope
 import it.unibo.jakta.agents.bdi.environment.Environment
@@ -18,6 +19,6 @@ class EnvironmentScope : Builder<Environment> {
     }
 
     override fun build(): Environment = environment.copy(
-        externalActions = actionsScopes.build(),
+        externalActions = actionsScopes.build() + ExternalActions.default(),
     )
 }

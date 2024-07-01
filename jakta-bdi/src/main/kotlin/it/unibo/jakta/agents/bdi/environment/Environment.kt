@@ -3,6 +3,7 @@ package it.unibo.jakta.agents.bdi.environment
 import it.unibo.jakta.agents.bdi.Agent
 import it.unibo.jakta.agents.bdi.AgentID
 import it.unibo.jakta.agents.bdi.actions.ExternalAction
+import it.unibo.jakta.agents.bdi.actions.ExternalActions
 import it.unibo.jakta.agents.bdi.beliefs.BeliefBase
 import it.unibo.jakta.agents.bdi.environment.impl.EnvironmentImpl
 import it.unibo.jakta.agents.bdi.messages.Message
@@ -52,7 +53,7 @@ interface Environment {
 
         fun of(
             agentIDs: Map<String, AgentID> = emptyMap(),
-            externalActions: Map<String, ExternalAction> = emptyMap(),
+            externalActions: Map<String, ExternalAction> = ExternalActions.default(),
             messageBoxes: Map<AgentID, MessageQueue> = emptyMap(),
             perception: Perception = Perception.empty(),
             data: Map<String, Any> = emptyMap(),
