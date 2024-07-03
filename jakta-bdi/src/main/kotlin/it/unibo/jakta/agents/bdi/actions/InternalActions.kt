@@ -175,6 +175,21 @@ object InternalActions {
             }
         }
     }
+    object SubString : AbstractInternalAction("substring", 3) {
+        override fun action(request: InternalRequest) {
+            val substring = request.arguments[0].toString()
+            val string = request.arguments[1].toString()
+            val range = string.toRegex().find(substring)?.range
+            if (range != null) {
+                if (request.arguments.size == 3 && request.arguments[2].isVar) {
+                    val start = request.arguments[2].castToVar()
+                    addResults(Substitution.of(start, Numeric.of(range.first)))
+                }
+            } else {
+                addResults(Substitution.failed())
+            }
+        }
+    }
 
     fun default(): Map<String, InternalAction> {
         val random = Random()
@@ -195,6 +210,7 @@ object InternalActions {
             Eval.signature.name to Eval,
             AddSource.signature.name to AddSource,
             MyName.signature.name to MyName,
+            SubString.signature.name to SubString,
         )
     }
 }
