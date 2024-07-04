@@ -1,10 +1,12 @@
 package it.unibo.jakta.agents.bdi.actions
 
 import it.unibo.jakta.agents.bdi.actions.impl.AbstractInternalAction
+import it.unibo.tuprolog.core.Integer
 import it.unibo.tuprolog.core.Numeric
 import it.unibo.tuprolog.core.Struct
 import it.unibo.tuprolog.core.Substitution
 import it.unibo.tuprolog.core.Truth
+import it.unibo.tuprolog.unify.Unificator.Companion.unifyWith
 
 object InternalActions {
     object Print : AbstractInternalAction("print", 2) {
@@ -107,19 +109,23 @@ object InternalActions {
 
     object Type : AbstractInternalAction("type", 2) {
         override fun action(request: InternalRequest) {
-            if (request.arguments[1].isVar) {
-                val type = request.arguments[1].castToVar()
-                val term = request.arguments[0]
-                when {
-                    term.isNumber -> addResults(Substitution.of(type, it.unibo.tuprolog.core.Atom.of("number")))
-                    term.isAtom -> addResults(Substitution.of(type, it.unibo.tuprolog.core.Atom.of("atom")))
-                    term.isVar -> addResults(Substitution.of(type, it.unibo.tuprolog.core.Atom.of("variable")))
-                    term.isList -> addResults(Substitution.of(type, it.unibo.tuprolog.core.Atom.of("list")))
-                    term.isTuple -> addResults(Substitution.of(type, it.unibo.tuprolog.core.Atom.of("tuple")))
-                    term.isIndicator -> addResults(Substitution.of(type, it.unibo.tuprolog.core.Atom.of("indicator")))
-                    term.isClause -> addResults(Substitution.of(type, it.unibo.tuprolog.core.Atom.of("clause")))
-                    term.isStruct -> addResults(Substitution.of(type, it.unibo.tuprolog.core.Atom.of("structure")))
-                    else -> addResults(Substitution.of(type, it.unibo.tuprolog.core.Atom.of("unknown")))
+            val type = request.arguments[1]
+            val term = request.arguments[0]
+            val value = when {
+                term.isNumber -> it.unibo.tuprolog.core.Atom.of("number")
+                term.isAtom -> it.unibo.tuprolog.core.Atom.of("atom")
+                term.isVar -> it.unibo.tuprolog.core.Atom.of("variable")
+                term.isList -> it.unibo.tuprolog.core.Atom.of("list")
+                term.isTuple -> it.unibo.tuprolog.core.Atom.of("tuple")
+                term.isIndicator -> it.unibo.tuprolog.core.Atom.of("indicator")
+                term.isClause -> it.unibo.tuprolog.core.Atom.of("clause")
+                term.isStruct -> it.unibo.tuprolog.core.Atom.of("structure")
+                else -> it.unibo.tuprolog.core.Atom.of("unknown")
+            }
+            when (type.unifyWith(value)) {
+                null -> addResults(Substitution.failed())
+                else -> if (type.isVar) {
+                    addResults(Substitution.of(type.castToVar(), value))
                 }
             }
         }
@@ -127,14 +133,23 @@ object InternalActions {
 
     object Eval : AbstractInternalAction("eval", 2) {
         override fun action(request: InternalRequest) {
-            if (request.arguments[0].isVar) {
-                val value = request.arguments[0].castToVar()
+            if (request.arguments[1].isStruct) {
+                val result = request.arguments[0]
                 val expression = request.arguments[1].castToStruct()
                 val solution = request.agent.context.beliefBase.solve(expression)
-                when (solution.isYes) {
-                    true -> addResults(Substitution.of(value, Truth.TRUE))
-                    false -> addResults(Substitution.of(value, Truth.FALSE))
+                val value = when (solution.isYes) {
+                    true -> Truth.TRUE
+                    false -> Truth.FALSE
                 }
+                when (result.unifyWith(value)) {
+                    null -> addResults(Substitution.failed())
+                    else -> if (result.isVar) {
+                        addResults(Substitution.of(result.castToVar(), value))
+                    }
+                }
+            } else {
+                println("")
+                addResults(Substitution.failed())
             }
         }
     }
@@ -167,9 +182,12 @@ object InternalActions {
 
     object MyName : AbstractInternalAction("my_name", 1) {
         override fun action(request: InternalRequest) {
-            if (request.arguments[0].isVar) {
-                val myName = request.arguments[0].castToVar()
-                addResults(Substitution.of(myName, it.unibo.tuprolog.core.Atom.of(request.agent.name)))
+            val myName = request.arguments[0]
+            when (val value = myName.unifyWith(it.unibo.tuprolog.core.Atom.of(request.agent.name))) {
+                null -> addResults(Substitution.failed())
+                else -> if (myName.isVar) {
+                    addResults(Substitution.of(myName.castToVar(), value))
+                }
             }
         }
     }
@@ -178,14 +196,17 @@ object InternalActions {
         override fun action(request: InternalRequest) {
             val substring = request.arguments[0].toString()
             val string = request.arguments[1].toString()
-            val range = string.toRegex().find(substring)?.range
-            if (range != null) {
-                if (request.arguments.size == 3 && request.arguments[2].isVar) {
-                    val start = request.arguments[2].castToVar()
-                    addResults(Substitution.of(start, Numeric.of(range.first)))
+            when (val range = string.toRegex().find(substring)?.range) {
+                null -> addResults(Substitution.failed())
+                else -> if (request.arguments.size == 3) {
+                    val start = request.arguments[2]
+                    when (val value = start.unifyWith(Integer.of(range.first))) {
+                        null -> addResults(Substitution.failed())
+                        else -> if (start.isVar) {
+                            addResults(Substitution.of(start.castToVar(), value))
+                        }
+                    }
                 }
-            } else {
-                addResults(Substitution.failed())
             }
         }
     }

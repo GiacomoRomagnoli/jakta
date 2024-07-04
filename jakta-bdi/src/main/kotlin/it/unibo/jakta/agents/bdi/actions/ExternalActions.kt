@@ -4,10 +4,10 @@ import it.unibo.jakta.agents.bdi.actions.impl.AbstractExternalAction
 import it.unibo.jakta.agents.bdi.messages.Achieve
 import it.unibo.jakta.agents.bdi.messages.Message
 import it.unibo.jakta.agents.bdi.messages.Tell
+import it.unibo.tuprolog.core.Atom
 import it.unibo.tuprolog.core.List
 import it.unibo.tuprolog.core.Substitution
-import it.unibo.tuprolog.core.Term
-import it.unibo.tuprolog.core.parsing.parse
+import it.unibo.tuprolog.unify.Unificator.Companion.unifyWith
 
 object ExternalActions {
     object Send : AbstractExternalAction("send", 3) {
@@ -44,10 +44,13 @@ object ExternalActions {
 
     object AllNames : AbstractExternalAction("all_names", 1) {
         override fun action(request: ExternalRequest) {
-            if (request.arguments[0].isVar) {
-                val allNames = request.arguments[0].castToVar()
-                val nameList = List.of((request.environment.agentIDs.keys - request.sender).map { Term.parse(it) })
-                addResults(Substitution.of(allNames, nameList))
+            val allNames = request.arguments[0]
+            val value = List.of((request.environment.agentIDs.keys - request.sender).map { Atom.of(it) })
+            when (allNames.unifyWith(value)) {
+                null -> addResults(Substitution.failed())
+                else -> if (allNames.isVar) {
+                    addResults(Substitution.of(allNames.castToVar(), value))
+                }
             }
         }
     }
