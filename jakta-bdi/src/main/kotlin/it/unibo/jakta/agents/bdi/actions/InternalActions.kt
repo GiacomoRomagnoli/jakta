@@ -5,6 +5,7 @@ import it.unibo.tuprolog.core.Integer
 import it.unibo.tuprolog.core.Numeric
 import it.unibo.tuprolog.core.Struct
 import it.unibo.tuprolog.core.Substitution
+import it.unibo.tuprolog.core.Term
 import it.unibo.tuprolog.core.Truth
 import it.unibo.tuprolog.unify.Unificator.Companion.unifyWith
 import it.unibo.tuprolog.core.Atom as Atom2pkt
@@ -155,28 +156,42 @@ object InternalActions {
         }
     }
 
-    object AddSource : AbstractInternalAction("add_source", 3) {
-        private fun apply(term: Struct, source: Atom2pkt) =
-            term.addFirst(Struct.of("source", source))
+    object AddNestedSource : AbstractInternalAction("add_nested_source", 3) {
+        private fun apply(belief: Struct, source: Atom2pkt) =
+            when (belief.arity > 0 && belief[0].isStruct && belief[0].castToStruct().functor == "source") {
+                true -> belief.setArgs(listOf(Struct.of("source", source, belief[0])) + belief.args - belief[0])
+                false -> belief.addFirst(Struct.of("source", source))
+            }
 
         override fun action(request: InternalRequest) {
-            if (request.arguments[1].isAtom && request.arguments[2].isVar) {
-                val source = request.arguments[1].castToAtom()
-                val result = request.arguments[2].castToVar()
-                if (request.arguments[0].isList) {
-                    val beliefs = request.arguments[0].castToList().unfoldedList
-                    val beliefsWithSource = beliefs.flatMap {
-                        if (it.isStruct && !it.isEmptyList) {
-                            listOf(apply(it.castToStruct(), source))
-                        } else {
-                            listOf()
+            when (request.arguments[1].isAtom) {
+                true -> {
+                    val beliefs = request.arguments[0]
+                    val source = request.arguments[1].castToAtom()
+                    val result = request.arguments[2]
+                    val value: Term? = when {
+                        beliefs.isList -> {
+                            List2pkt.of(
+                                beliefs.castToList().unfoldedList.flatMap {
+                                    if (it.isStruct && !it.isEmptyList) {
+                                        listOf(apply(it.castToStruct(), source))
+                                    } else {
+                                        listOf()
+                                    }
+                                },
+                            )
+                        }
+                        beliefs.isStruct -> apply(beliefs.castToStruct(), source)
+                        else -> null
+                    }
+                    when (value) {
+                        null -> addResults(Substitution.failed())
+                        else -> if (result.isVar) {
+                            addResults(Substitution.of(result.castToVar(), value))
                         }
                     }
-                    addResults(Substitution.of(result, List2pkt.of(beliefsWithSource)))
-                } else if (request.arguments[0].isStruct) {
-                    val belief = request.arguments[0].castToStruct()
-                    addResults(Substitution.of(result, apply(belief, source)))
                 }
+                false -> addResults(Substitution.failed())
             }
         }
     }
@@ -229,7 +244,7 @@ object InternalActions {
             Number.signature.name to Number,
             Type.signature.name to Type,
             Eval.signature.name to Eval,
-            AddSource.signature.name to AddSource,
+            AddNestedSource.signature.name to AddNestedSource,
             MyName.signature.name to MyName,
             SubString.signature.name to SubString,
         )
