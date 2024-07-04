@@ -7,6 +7,8 @@ import it.unibo.tuprolog.core.Struct
 import it.unibo.tuprolog.core.Substitution
 import it.unibo.tuprolog.core.Truth
 import it.unibo.tuprolog.unify.Unificator.Companion.unifyWith
+import it.unibo.tuprolog.core.Atom as Atom2pkt
+import it.unibo.tuprolog.core.List as List2pkt
 
 object InternalActions {
     object Print : AbstractInternalAction("print", 2) {
@@ -112,15 +114,15 @@ object InternalActions {
             val type = request.arguments[1]
             val term = request.arguments[0]
             val value = when {
-                term.isNumber -> it.unibo.tuprolog.core.Atom.of("number")
-                term.isAtom -> it.unibo.tuprolog.core.Atom.of("atom")
-                term.isVar -> it.unibo.tuprolog.core.Atom.of("variable")
-                term.isList -> it.unibo.tuprolog.core.Atom.of("list")
-                term.isTuple -> it.unibo.tuprolog.core.Atom.of("tuple")
-                term.isIndicator -> it.unibo.tuprolog.core.Atom.of("indicator")
-                term.isClause -> it.unibo.tuprolog.core.Atom.of("clause")
-                term.isStruct -> it.unibo.tuprolog.core.Atom.of("structure")
-                else -> it.unibo.tuprolog.core.Atom.of("unknown")
+                term.isNumber -> Atom2pkt.of("number")
+                term.isAtom -> Atom2pkt.of("atom")
+                term.isVar -> Atom2pkt.of("variable")
+                term.isList -> Atom2pkt.of("list")
+                term.isTuple -> Atom2pkt.of("tuple")
+                term.isIndicator -> Atom2pkt.of("indicator")
+                term.isClause -> Atom2pkt.of("clause")
+                term.isStruct -> Atom2pkt.of("structure")
+                else -> Atom2pkt.of("unknown")
             }
             when (type.unifyWith(value)) {
                 null -> addResults(Substitution.failed())
@@ -148,14 +150,13 @@ object InternalActions {
                     }
                 }
             } else {
-                println("")
                 addResults(Substitution.failed())
             }
         }
     }
 
     object AddSource : AbstractInternalAction("add_source", 3) {
-        private fun apply(term: Struct, source: it.unibo.tuprolog.core.Atom) =
+        private fun apply(term: Struct, source: Atom2pkt) =
             term.addFirst(Struct.of("source", source))
 
         override fun action(request: InternalRequest) {
@@ -171,7 +172,7 @@ object InternalActions {
                             listOf()
                         }
                     }
-                    addResults(Substitution.of(result, it.unibo.tuprolog.core.List.of(beliefsWithSource)))
+                    addResults(Substitution.of(result, List2pkt.of(beliefsWithSource)))
                 } else if (request.arguments[0].isStruct) {
                     val belief = request.arguments[0].castToStruct()
                     addResults(Substitution.of(result, apply(belief, source)))
@@ -183,7 +184,7 @@ object InternalActions {
     object MyName : AbstractInternalAction("my_name", 1) {
         override fun action(request: InternalRequest) {
             val myName = request.arguments[0]
-            when (val value = myName.unifyWith(it.unibo.tuprolog.core.Atom.of(request.agent.name))) {
+            when (val value = myName.unifyWith(Atom2pkt.of(request.agent.name))) {
                 null -> addResults(Substitution.failed())
                 else -> if (myName.isVar) {
                     addResults(Substitution.of(myName.castToVar(), value))
