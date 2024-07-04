@@ -4,9 +4,7 @@ import it.unibo.jakta.agents.bdi.actions.impl.AbstractInternalAction
 import it.unibo.tuprolog.core.Numeric
 import it.unibo.tuprolog.core.Struct
 import it.unibo.tuprolog.core.Substitution
-import it.unibo.tuprolog.core.Term
 import it.unibo.tuprolog.core.Truth
-import it.unibo.tuprolog.core.parsing.parse
 
 object InternalActions {
     object Print : AbstractInternalAction("print", 2) {
@@ -113,15 +111,15 @@ object InternalActions {
                 val type = request.arguments[1].castToVar()
                 val term = request.arguments[0]
                 when {
-                    term.isNumber -> addResults(Substitution.of(type, Term.parse("number")))
-                    term.isAtom -> addResults(Substitution.of(type, Term.parse("atom")))
-                    term.isVar -> addResults(Substitution.of(type, Term.parse("variable")))
-                    term.isList -> addResults(Substitution.of(type, Term.parse("list")))
-                    term.isTuple -> addResults(Substitution.of(type, Term.parse("tuple")))
-                    term.isIndicator -> addResults(Substitution.of(type, Term.parse("indicator")))
-                    term.isClause -> addResults(Substitution.of(type, Term.parse("clause")))
-                    term.isStruct -> addResults(Substitution.of(type, Term.parse("structure")))
-                    else -> addResults(Substitution.of(type, Term.parse("unknown")))
+                    term.isNumber -> addResults(Substitution.of(type, it.unibo.tuprolog.core.Atom.of("number")))
+                    term.isAtom -> addResults(Substitution.of(type, it.unibo.tuprolog.core.Atom.of("atom")))
+                    term.isVar -> addResults(Substitution.of(type, it.unibo.tuprolog.core.Atom.of("variable")))
+                    term.isList -> addResults(Substitution.of(type, it.unibo.tuprolog.core.Atom.of("list")))
+                    term.isTuple -> addResults(Substitution.of(type, it.unibo.tuprolog.core.Atom.of("tuple")))
+                    term.isIndicator -> addResults(Substitution.of(type, it.unibo.tuprolog.core.Atom.of("indicator")))
+                    term.isClause -> addResults(Substitution.of(type, it.unibo.tuprolog.core.Atom.of("clause")))
+                    term.isStruct -> addResults(Substitution.of(type, it.unibo.tuprolog.core.Atom.of("structure")))
+                    else -> addResults(Substitution.of(type, it.unibo.tuprolog.core.Atom.of("unknown")))
                 }
             }
         }
@@ -171,10 +169,11 @@ object InternalActions {
         override fun action(request: InternalRequest) {
             if (request.arguments[0].isVar) {
                 val myName = request.arguments[0].castToVar()
-                addResults(Substitution.of(myName, Term.parse(request.agent.name)))
+                addResults(Substitution.of(myName, it.unibo.tuprolog.core.Atom.of(request.agent.name)))
             }
         }
     }
+
     object SubString : AbstractInternalAction("substring", 3) {
         override fun action(request: InternalRequest) {
             val substring = request.arguments[0].toString()
