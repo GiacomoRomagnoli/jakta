@@ -7,6 +7,7 @@ import it.unibo.tuprolog.core.Struct
 import it.unibo.tuprolog.core.Substitution
 import it.unibo.tuprolog.core.Term
 import it.unibo.tuprolog.core.Truth
+import it.unibo.tuprolog.core.parsing.parse
 import it.unibo.tuprolog.unify.Unificator.Companion.mguWith
 import it.unibo.tuprolog.core.Atom as Atom2pkt
 import it.unibo.tuprolog.core.List as List2pkt
@@ -202,6 +203,18 @@ object InternalActions {
         }
     }
 
+    object Term2String : AbstractInternalAction("term2string", 2) {
+        override fun action(request: InternalRequest) {
+            val term = request.arguments[0]
+            val string = request.arguments[1]
+            when {
+                term.isGround -> addResults(string mguWith Atom2pkt.of(term.toString()))
+                string.isAtom -> addResults(term mguWith Term.parse(string.castToAtom().value))
+                else -> addResults(Substitution.failed())
+            }
+        }
+    }
+
     fun default(): Map<String, InternalAction> {
         val random = Random()
         val setRandomSeed = SetRandomSeed(random)
@@ -222,6 +235,7 @@ object InternalActions {
             AddNestedSource.signature.name to AddNestedSource,
             MyName.signature.name to MyName,
             SubString.signature.name to SubString,
+            Term2String.signature.name to Term2String,
         )
     }
 }
