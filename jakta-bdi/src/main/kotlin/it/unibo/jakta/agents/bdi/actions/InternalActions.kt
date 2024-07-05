@@ -215,6 +215,29 @@ object InternalActions {
         }
     }
 
+    sealed class LowerCaseToUpperCase(name: String, private val reverse: Boolean = false) :
+        AbstractInternalAction(name, 2) {
+        private fun transform(string: String, condition: Boolean) =
+            when (condition) {
+                true -> string.uppercase()
+                false -> string.lowercase()
+            }
+
+        override fun action(request: InternalRequest) {
+            val string = request.arguments[0]
+            val result = request.arguments[1]
+            when {
+                string.isAtom ->
+                    addResults(result mguWith Atom2pkt.of(transform(string.castToAtom().value, reverse)))
+                result.isAtom ->
+                    addResults(string mguWith Atom2pkt.of(transform(result.castToAtom().value, !reverse)))
+            }
+        }
+    }
+
+    object LowerCase : LowerCaseToUpperCase("lower_case")
+    object UpperCase : LowerCaseToUpperCase("upper_case", true)
+
     fun default(): Map<String, InternalAction> {
         val random = Random()
         val setRandomSeed = SetRandomSeed(random)
@@ -236,6 +259,8 @@ object InternalActions {
             MyName.signature.name to MyName,
             SubString.signature.name to SubString,
             Term2String.signature.name to Term2String,
+            UpperCase.signature.name to UpperCase,
+            LowerCase.signature.name to LowerCase,
         )
     }
 }
