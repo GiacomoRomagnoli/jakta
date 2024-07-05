@@ -164,13 +164,9 @@ object InternalActions {
                     val value: Term? = when {
                         beliefs.isList -> {
                             List2pkt.of(
-                                beliefs.castToList().unfoldedList.flatMap {
-                                    if (it.isStruct && !it.isEmptyList) {
-                                        listOf(apply(it.castToStruct(), source))
-                                    } else {
-                                        listOf()
-                                    }
-                                },
+                                beliefs.castToList().unfoldedList
+                                    .filter { it.isStruct && !it.isEmptyList }
+                                    .map { apply(it.castToStruct(), source) },
                             )
                         }
                         beliefs.isStruct -> apply(beliefs.castToStruct(), source)
