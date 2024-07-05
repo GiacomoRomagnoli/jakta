@@ -6,8 +6,7 @@ import it.unibo.jakta.agents.bdi.messages.Message
 import it.unibo.jakta.agents.bdi.messages.Tell
 import it.unibo.tuprolog.core.Atom
 import it.unibo.tuprolog.core.List
-import it.unibo.tuprolog.core.Substitution
-import it.unibo.tuprolog.unify.Unificator.Companion.unifyWith
+import it.unibo.tuprolog.unify.Unificator.Companion.mguWith
 
 object ExternalActions {
     object Send : AbstractExternalAction("send", 3) {
@@ -46,12 +45,7 @@ object ExternalActions {
         override fun action(request: ExternalRequest) {
             val allNames = request.arguments[0]
             val value = List.of((request.environment.agentIDs.keys - request.sender).map { Atom.of(it) })
-            when (allNames.unifyWith(value)) {
-                null -> addResults(Substitution.failed())
-                else -> if (allNames.isVar) {
-                    addResults(Substitution.of(allNames.castToVar(), value))
-                }
-            }
+            addResults(allNames.mguWith(value))
         }
     }
 

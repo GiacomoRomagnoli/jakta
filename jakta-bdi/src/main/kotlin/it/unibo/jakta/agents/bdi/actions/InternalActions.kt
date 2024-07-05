@@ -7,7 +7,7 @@ import it.unibo.tuprolog.core.Struct
 import it.unibo.tuprolog.core.Substitution
 import it.unibo.tuprolog.core.Term
 import it.unibo.tuprolog.core.Truth
-import it.unibo.tuprolog.unify.Unificator.Companion.unifyWith
+import it.unibo.tuprolog.unify.Unificator.Companion.mguWith
 import it.unibo.tuprolog.core.Atom as Atom2pkt
 import it.unibo.tuprolog.core.List as List2pkt
 
@@ -60,7 +60,7 @@ object InternalActions {
         }
     }
 
-    class RandomSeed(randomAction: Random) : AbstractInternalAction("randomSeed", 1) {
+    class SetRandomSeed(randomAction: Random) : AbstractInternalAction("set_random_seed", 1) {
         private var random = randomAction
         override fun action(request: InternalRequest) {
             if (request.arguments[0].isInteger) {
@@ -125,33 +125,24 @@ object InternalActions {
                 term.isStruct -> Atom2pkt.of("structure")
                 else -> Atom2pkt.of("unknown")
             }
-            when (type.unifyWith(value)) {
-                null -> addResults(Substitution.failed())
-                else -> if (type.isVar) {
-                    addResults(Substitution.of(type.castToVar(), value))
-                }
-            }
+            addResults(type.mguWith(value))
         }
     }
 
     object Eval : AbstractInternalAction("eval", 2) {
         override fun action(request: InternalRequest) {
-            if (request.arguments[1].isStruct) {
-                val result = request.arguments[0]
-                val expression = request.arguments[1].castToStruct()
-                val solution = request.agent.context.beliefBase.solve(expression)
-                val value = when (solution.isYes) {
-                    true -> Truth.TRUE
-                    false -> Truth.FALSE
-                }
-                when (result.unifyWith(value)) {
-                    null -> addResults(Substitution.failed())
-                    else -> if (result.isVar) {
-                        addResults(Substitution.of(result.castToVar(), value))
+            when (request.arguments[1].isStruct) {
+                false -> addResults(Substitution.failed())
+                true -> {
+                    val result = request.arguments[0]
+                    val expression = request.arguments[1].castToStruct()
+                    val solution = request.agent.context.beliefBase.solve(expression)
+                    val value = when (solution.isYes) {
+                        true -> Truth.TRUE
+                        false -> Truth.FALSE
                     }
+                    addResults(result.mguWith(value))
                 }
-            } else {
-                addResults(Substitution.failed())
             }
         }
     }
@@ -165,6 +156,7 @@ object InternalActions {
 
         override fun action(request: InternalRequest) {
             when (request.arguments[1].isAtom) {
+                false -> addResults(Substitution.failed())
                 true -> {
                     val beliefs = request.arguments[0]
                     val source = request.arguments[1].castToAtom()
@@ -186,12 +178,9 @@ object InternalActions {
                     }
                     when (value) {
                         null -> addResults(Substitution.failed())
-                        else -> if (result.isVar) {
-                            addResults(Substitution.of(result.castToVar(), value))
-                        }
+                        else -> addResults(result.mguWith(value))
                     }
                 }
-                false -> addResults(Substitution.failed())
             }
         }
     }
@@ -199,12 +188,7 @@ object InternalActions {
     object MyName : AbstractInternalAction("my_name", 1) {
         override fun action(request: InternalRequest) {
             val myName = request.arguments[0]
-            when (val value = myName.unifyWith(Atom2pkt.of(request.agent.name))) {
-                null -> addResults(Substitution.failed())
-                else -> if (myName.isVar) {
-                    addResults(Substitution.of(myName.castToVar(), value))
-                }
-            }
+            addResults(myName.mguWith(Atom2pkt.of(request.agent.name)))
         }
     }
 
@@ -216,12 +200,7 @@ object InternalActions {
                 null -> addResults(Substitution.failed())
                 else -> if (request.arguments.size == 3) {
                     val start = request.arguments[2]
-                    when (val value = start.unifyWith(Integer.of(range.first))) {
-                        null -> addResults(Substitution.failed())
-                        else -> if (start.isVar) {
-                            addResults(Substitution.of(start.castToVar(), value))
-                        }
-                    }
+                    addResults(start.mguWith(Integer.of(range.first)))
                 }
             }
         }
@@ -229,7 +208,7 @@ object InternalActions {
 
     fun default(): Map<String, InternalAction> {
         val random = Random()
-        val randomSeed = RandomSeed(random)
+        val setRandomSeed = SetRandomSeed(random)
         return mapOf(
             Print.signature.name to Print,
             Fail.signature.name to Fail,
@@ -237,7 +216,7 @@ object InternalActions {
             Pause.signature.name to Pause,
             Sleep.signature.name to Sleep,
             random.signature.name to random,
-            randomSeed.signature.name to randomSeed,
+            setRandomSeed.signature.name to setRandomSeed,
             Atom.signature.name to Atom,
             Structure.signature.name to Structure,
             Ground.signature.name to Ground,
