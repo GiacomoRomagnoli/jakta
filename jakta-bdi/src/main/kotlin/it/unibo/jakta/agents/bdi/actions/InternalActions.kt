@@ -117,10 +117,10 @@ object InternalActions {
             val term = request.arguments[0]
             val value = when {
                 term.isNumber -> Atom2pkt.of("number")
-                term.isAtom -> Atom2pkt.of("atom")
-                term.isVar -> Atom2pkt.of("variable")
                 term.isList -> Atom2pkt.of("list")
                 term.isTuple -> Atom2pkt.of("tuple")
+                term.isAtom -> Atom2pkt.of("atom")
+                term.isVar -> Atom2pkt.of("variable")
                 term.isIndicator -> Atom2pkt.of("indicator")
                 term.isClause -> Atom2pkt.of("clause")
                 term.isStruct -> Atom2pkt.of("structure")
