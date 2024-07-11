@@ -8,7 +8,11 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import it.unibo.jakta.agents.bdi.actions.InternalActions
 import it.unibo.jakta.agents.bdi.actions.InternalRequest
+import it.unibo.tuprolog.core.Atom
+import it.unibo.tuprolog.core.List
 import it.unibo.tuprolog.core.Numeric
+import it.unibo.tuprolog.core.Struct
+import it.unibo.tuprolog.core.Substitution
 import it.unibo.tuprolog.core.Var
 import org.gciatto.kt.math.BigDecimal
 import kotlin.random.Random
@@ -45,6 +49,71 @@ class TestDefaultActions : DescribeSpec({
                 val nextNumber = random.execute(randomRequest).substitution[x]!!.castToReal().value
                 nextNumber shouldBeEqualComparingTo BigDecimal.of(generator.nextDouble())
             }
+        }
+    }
+
+    describe("Atom") {
+        it("should not fail if argument is an Atom") {
+            val request = InternalRequest.of(agent, null, Atom.of("ATOM"))
+            InternalActions.Atom.execute(request).substitution shouldBe Substitution.empty()
+        }
+        it("should fail if argument is not an Atom") {
+            val request = InternalRequest.of(agent, null, Numeric.of(1))
+            InternalActions.Atom.execute(request).substitution shouldBe Substitution.failed()
+        }
+    }
+
+    describe("Structure") {
+        it("should not fail if argument is a Struct") {
+            val request = InternalRequest.of(agent, null, Struct.of("functor", Atom.of("arg")))
+            InternalActions.Structure.execute(request).substitution shouldBe Substitution.empty()
+        }
+        it("should fail if argument is not a Struct") {
+            val request = InternalRequest.of(agent, null, Numeric.of(1))
+            InternalActions.Structure.execute(request).substitution shouldBe Substitution.failed()
+        }
+    }
+
+    describe("List") {
+        it("should not fail if argument is a List") {
+            val request = InternalRequest.of(agent, null, List.of())
+            InternalActions.List.execute(request).substitution shouldBe Substitution.empty()
+        }
+        it("should fail if argument is not a List") {
+            val request = InternalRequest.of(agent, null, Numeric.of(1))
+            InternalActions.List.execute(request).substitution shouldBe Substitution.failed()
+        }
+    }
+
+    describe("Ground") {
+        it("should not fail if argument is ground") {
+            val request = InternalRequest.of(agent, null, Atom.of("atom"))
+            InternalActions.Ground.execute(request).substitution shouldBe Substitution.empty()
+        }
+        it("should fail if argument is not ground") {
+            val request = InternalRequest.of(agent, null, Var.of("X"))
+            InternalActions.Ground.execute(request).substitution shouldBe Substitution.failed()
+        }
+    }
+
+    describe("Number") {
+        it("should not fail if argument is a number") {
+            val request = InternalRequest.of(agent, null, Numeric.of(1))
+            InternalActions.Number.execute(request).substitution shouldBe Substitution.empty()
+        }
+        it("should fail if argument is not a number") {
+            val request = InternalRequest.of(agent, null, Atom.of("atom"))
+            InternalActions.Number.execute(request).substitution shouldBe Substitution.failed()
+        }
+    }
+
+    describe("Type") {
+        it("should unify the second argument with first argument type") {
+            val type = Var.of("X")
+            val request1 = InternalRequest.of(agent, null, Numeric.of(1), type)
+            val request2 = InternalRequest.of(agent, null, List.of(), type)
+            InternalActions.Type.execute(request1).substitution[type] shouldBe Atom.of("number")
+            InternalActions.Type.execute(request2).substitution[type] shouldBe Atom.of("list")
         }
     }
 })
