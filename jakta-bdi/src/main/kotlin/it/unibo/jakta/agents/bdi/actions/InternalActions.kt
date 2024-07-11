@@ -238,6 +238,21 @@ object InternalActions {
     object LowerCase : LowerCaseToUpperCase("lower_case")
     object UpperCase : LowerCaseToUpperCase("upper_case", true)
 
+    object Replace : AbstractInternalAction("replace", 4) {
+        override fun action(request: InternalRequest) {
+            if (request.arguments[0].isAtom && request.arguments[1].isAtom && request.arguments[2].isAtom) {
+                val s1 = request.arguments[0].castToAtom().value
+                val s2 = request.arguments[1].castToAtom().value
+                val s3 = request.arguments[2].castToAtom().value
+                val s4 = request.arguments[3]
+                val value = Atom2pkt.of(s1.replace(s2, s3))
+                addResults(s4 mguWith value)
+            } else {
+                addResults(Substitution.failed())
+            }
+        }
+    }
+
     fun default(): Map<String, InternalAction> {
         val random = Random()
         val setRandomSeed = SetRandomSeed(random)
@@ -261,6 +276,7 @@ object InternalActions {
             Term2String.signature.name to Term2String,
             UpperCase.signature.name to UpperCase,
             LowerCase.signature.name to LowerCase,
+            Replace.signature.name to Replace,
         )
     }
 }
