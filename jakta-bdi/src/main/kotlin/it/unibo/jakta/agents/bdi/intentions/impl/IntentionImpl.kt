@@ -24,8 +24,12 @@ internal class IntentionImpl(
         this.copy(recordStack = listOf(activationRecord) + recordStack)
 
     override fun applySubstitution(substitution: Substitution): Intention {
-        val record = recordStack.first()
-        return this.copy(recordStack = listOf(record.applySubstitution(substitution)) + recordStack - record)
+        return if (recordStack.isEmpty()) {
+            this.copy()
+        } else {
+            val record = recordStack.first()
+            this.copy(recordStack = listOf(record.applySubstitution(substitution)) + recordStack - record)
+        }
     }
 
     override fun toString(): String = "$id { \n ${recordStack.joinToString(separator = "\n", prefix = "\t")} \n }"
