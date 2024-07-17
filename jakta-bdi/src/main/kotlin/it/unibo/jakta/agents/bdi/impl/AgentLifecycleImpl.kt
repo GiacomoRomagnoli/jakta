@@ -16,6 +16,7 @@ import it.unibo.jakta.agents.bdi.actions.effects.PlanChange
 import it.unibo.jakta.agents.bdi.actions.effects.PopMessage
 import it.unibo.jakta.agents.bdi.actions.effects.Sleep
 import it.unibo.jakta.agents.bdi.actions.effects.Stop
+import it.unibo.jakta.agents.bdi.actions.effects.SuspendCurrentUntil
 import it.unibo.jakta.agents.bdi.beliefs.Belief
 import it.unibo.jakta.agents.bdi.beliefs.BeliefBase
 import it.unibo.jakta.agents.bdi.beliefs.BeliefUpdate
@@ -123,7 +124,7 @@ internal data class AgentLifecycleImpl(
                 if (newIntention.recordStack.isNotEmpty()) {
                     newIntention = newIntention.applySubstitution(internalResponse.substitution)
                 }
-                val newContext = applyEffects(context, internalResponse.effects)
+                val newContext = applyEffects(context, internalResponse.effects, intention)
                 ExecutionResult(
                     newContext.copy(intentions = newContext.intentions.updateIntention(newIntention)),
                 )
@@ -157,9 +158,11 @@ internal data class AgentLifecycleImpl(
                 if (newIntention.recordStack.isNotEmpty()) {
                     newIntention = newIntention.applySubstitution(externalResponse.substitution)
                 }
+                val changes = externalResponse.effects.filterIsInstance<SuspendCurrentUntil>()
+                val newContext = applyEffects(context, changes, intention)
                 ExecutionResult(
-                    context.copy(intentions = context.intentions.updateIntention(newIntention)),
-                    externalResponse.effects,
+                    newContext.copy(intentions = newContext.intentions.updateIntention(newIntention)),
+                    externalResponse.effects - changes.toSet(),
                 )
             } else {
                 ExecutionResult(failAchievementGoal(intention, context))
@@ -265,7 +268,7 @@ internal data class AgentLifecycleImpl(
             }
         }
 
-    private fun applyEffects(context: AgentContext, effects: Iterable<AgentChange>): AgentContext {
+    private fun applyEffects(context: AgentContext, effects: Iterable<AgentChange>, current: Intention): AgentContext {
         var newBeliefBase = context.beliefBase
         var newEvents = context.events
         var newPlans = context.planLibrary
@@ -296,6 +299,7 @@ internal data class AgentLifecycleImpl(
                 is Pause -> controller?.pause()
                 is Sleep -> controller?.sleep(it.millis)
                 is Stop -> controller?.stop()
+                is SuspendCurrentUntil -> newIntentions.updateIntention(current.copy(waitingFor = it.event))
             }
         }
         return context.copy(
@@ -361,7 +365,7 @@ internal data class AgentLifecycleImpl(
         var newIntentionPool = agent.context.intentions
         if (selectedEvent != null) {
             newEvents = newEvents - selectedEvent
-
+            newIntentionPool = newIntentionPool.resumeAll(selectedEvent)
             // STEP6: Retrieving all Relevant Plans.
             val relevantPlans = selectRelevantPlans(selectedEvent, agent.context.planLibrary)
             // if the set of relevant plans is empty, the event is simply discarded.
@@ -384,7 +388,7 @@ internal data class AgentLifecycleImpl(
                     agent.context.intentions,
                 )
                 // if (debugEnabled) println("[${agent.name}] Updated Intention: $updatedIntention")
-                newIntentionPool = agent.context.intentions.updateIntention(updatedIntention)
+                newIntentionPool = newIntentionPool.updateIntention(updatedIntention)
             } else {
                 if (debugEnabled) {
                     println("[${agent.name}] WARNING: There's no applicable plan for the event: $selectedEvent")
@@ -405,7 +409,7 @@ internal data class AgentLifecycleImpl(
         var executionResult = ExecutionResult(AgentContext.of())
 
         var newIntentionPool = agent.context.intentions
-        if (!newIntentionPool.isEmpty()) {
+        if (newIntentionPool.anyRunning()) {
             // STEP9: Select an Intention for Further Execution.
             val result = scheduleIntention(newIntentionPool)
             val scheduledIntention = result.intentionToExecute

@@ -11,7 +11,9 @@ import it.unibo.jakta.agents.bdi.actions.effects.RemoveAgent
 import it.unibo.jakta.agents.bdi.actions.effects.RemoveData
 import it.unibo.jakta.agents.bdi.actions.effects.SendMessage
 import it.unibo.jakta.agents.bdi.actions.effects.SpawnAgent
+import it.unibo.jakta.agents.bdi.actions.effects.SuspendCurrentUntil
 import it.unibo.jakta.agents.bdi.actions.effects.UpdateData
+import it.unibo.jakta.agents.bdi.events.Event
 import it.unibo.jakta.agents.bdi.messages.Message
 import it.unibo.tuprolog.solve.Signature
 
@@ -46,6 +48,10 @@ abstract class AbstractExternalAction(override val signature: Signature) : Exter
 
     override fun updateData(newData: Map<String, Any>) {
         effects.add(UpdateData(newData))
+    }
+
+    override fun suspendUntil(event: Event) {
+        effects.add(SuspendCurrentUntil(event))
     }
 
     override fun toString(): String = "ExternalAction(${signature.name}, ${signature.arity})"

@@ -1,5 +1,6 @@
 package it.unibo.jakta.agents.bdi.intentions
 
+import it.unibo.jakta.agents.bdi.events.Event
 import it.unibo.jakta.agents.bdi.goals.Goal
 import it.unibo.jakta.agents.bdi.intentions.impl.IntentionImpl
 import it.unibo.jakta.agents.bdi.plans.ActivationRecord
@@ -10,7 +11,7 @@ import it.unibo.tuprolog.core.Substitution
 interface Intention {
     val recordStack: List<ActivationRecord>
 
-    val isSuspended: Boolean
+    val waitingFor: Event?
 
     val id: IntentionID
 
@@ -29,17 +30,17 @@ interface Intention {
 
     fun copy(
         recordStack: List<ActivationRecord> = this.recordStack,
-        isSuspended: Boolean = this.isSuspended,
+        waitingFor: Event? = this.waitingFor,
         id: IntentionID = this.id,
-    ): Intention = of(recordStack, isSuspended, id)
+    ): Intention = of(recordStack, waitingFor, id)
 
     companion object {
         fun of(plan: Plan): Intention = IntentionImpl(listOf(plan.toActivationRecord()))
 
         fun of(
             recordStack: List<ActivationRecord> = emptyList(),
-            isSuspended: Boolean = false,
+            waitingFor: Event? = null,
             id: IntentionID = IntentionID(),
-        ): Intention = IntentionImpl(recordStack, isSuspended, id)
+        ): Intention = IntentionImpl(recordStack, waitingFor, id)
     }
 }

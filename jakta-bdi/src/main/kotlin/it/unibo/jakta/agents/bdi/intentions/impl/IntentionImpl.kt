@@ -1,5 +1,6 @@
 package it.unibo.jakta.agents.bdi.intentions.impl
 
+import it.unibo.jakta.agents.bdi.events.Event
 import it.unibo.jakta.agents.bdi.intentions.Intention
 import it.unibo.jakta.agents.bdi.intentions.IntentionID
 import it.unibo.jakta.agents.bdi.plans.ActivationRecord
@@ -7,7 +8,7 @@ import it.unibo.tuprolog.core.Substitution
 
 internal class IntentionImpl(
     override val recordStack: List<ActivationRecord>,
-    override val isSuspended: Boolean = false,
+    override val waitingFor: Event? = null,
     override val id: IntentionID = IntentionID(),
 ) : Intention {
 

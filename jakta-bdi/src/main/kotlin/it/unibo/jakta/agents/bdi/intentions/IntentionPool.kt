@@ -1,5 +1,6 @@
 package it.unibo.jakta.agents.bdi.intentions
 
+import it.unibo.jakta.agents.bdi.events.Event
 import it.unibo.jakta.agents.bdi.intentions.impl.IntentionPoolImpl
 
 interface IntentionPool : Map<IntentionID, Intention> {
@@ -10,6 +11,10 @@ interface IntentionPool : Map<IntentionID, Intention> {
     fun pop(): IntentionPool
 
     fun deleteIntention(intentionID: IntentionID): IntentionPool
+
+    fun anyRunning(): Boolean
+
+    fun resumeAll(waitingFor: Event): IntentionPool
 
     companion object {
         fun empty(): IntentionPool = IntentionPoolImpl()

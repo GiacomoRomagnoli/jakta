@@ -43,6 +43,7 @@ internal class MasImpl(
             is RemoveData -> environment = environment.removeData(it.key)
             is UpdateData -> environment = environment.updateData(it.newData)
             is PopMessage -> environment = environment.popMessage(it.agentName)
+            else -> Unit
         }
     }
 }
