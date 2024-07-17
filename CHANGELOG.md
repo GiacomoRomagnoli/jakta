@@ -1,3 +1,38 @@
+## [0.11.12](https://github.com/jakta-bdi/jakta/compare/v0.11.11...v0.11.12) (2024-07-17)
+
+
+### Bug Fixes
+
+* **deps:** update plugin org.danilopianini.gradle-pre-commit-git-hooks to v2.0.8 ([242f241](https://github.com/jakta-bdi/jakta/commit/242f241b370e0543da8bc434ecda36c6e3159f41))
+
+## [0.11.11](https://github.com/jakta-bdi/jakta/compare/v0.11.10...v0.11.11) (2024-07-17)
+
+
+### Bug Fixes
+
+* **deps:** update plugin multijvmtesting to v1.1.0 ([ea29a47](https://github.com/jakta-bdi/jakta/commit/ea29a4743fe71844a620a416b9195aeec4fe16e1))
+
+## [0.11.10](https://github.com/jakta-bdi/jakta/compare/v0.11.9...v0.11.10) (2024-07-16)
+
+
+### Bug Fixes
+
+* **deps:** update plugin multijvmtesting to v1 ([0f2c07a](https://github.com/jakta-bdi/jakta/commit/0f2c07a4302f4dc6779125910e139347456745bd))
+
+## [0.11.9](https://github.com/jakta-bdi/jakta/compare/v0.11.8...v0.11.9) (2024-07-12)
+
+
+### Bug Fixes
+
+* **deps:** update anitvam/conventionalcommit-semantic-releasing action to v0.7.30 ([57c9a7d](https://github.com/jakta-bdi/jakta/commit/57c9a7dd0e2412e2b48c126ce4fdd0d4551b82dd))
+
+## [0.11.8](https://github.com/jakta-bdi/jakta/compare/v0.11.7...v0.11.8) (2024-07-11)
+
+
+### Bug Fixes
+
+* **deps:** update dependency gradle to v8.9 ([7e59696](https://github.com/jakta-bdi/jakta/commit/7e5969692b3ee4c88760c6c8df308c672be512d0))
+
 ## [0.11.7](https://github.com/jakta-bdi/jakta/compare/v0.11.6...v0.11.7) (2024-07-10)
 
 
