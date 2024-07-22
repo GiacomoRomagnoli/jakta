@@ -5,3 +5,5 @@ sealed interface MessageType
 object Achieve : MessageType
 
 object Tell : MessageType
+
+object AskOne : MessageType

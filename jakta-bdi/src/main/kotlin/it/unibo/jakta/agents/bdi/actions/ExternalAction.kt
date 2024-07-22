@@ -4,6 +4,7 @@ import it.unibo.jakta.agents.bdi.Agent
 import it.unibo.jakta.agents.bdi.actions.effects.EnvironmentChange
 import it.unibo.jakta.agents.bdi.events.Event
 import it.unibo.jakta.agents.bdi.messages.Message
+import it.unibo.tuprolog.core.Term
 
 interface ExternalAction : Action<EnvironmentChange, ExternalResponse, ExternalRequest> {
     fun addAgent(agent: Agent)
@@ -13,7 +14,7 @@ interface ExternalAction : Action<EnvironmentChange, ExternalResponse, ExternalR
     fun addData(key: String, value: Any)
     fun removeData(key: String)
     fun updateData(newData: Map<String, Any>)
-    fun suspendUntil(event: Event)
+    fun suspendUntil(event: Event, response: Term? = null)
     fun updateData(keyValue: Pair<String, Any>, vararg others: Pair<String, Any>) =
         updateData(mapOf(keyValue, *others))
 }

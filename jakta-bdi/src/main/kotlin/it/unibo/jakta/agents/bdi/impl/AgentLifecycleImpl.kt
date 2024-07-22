@@ -46,6 +46,7 @@ import it.unibo.jakta.agents.bdi.goals.Test
 import it.unibo.jakta.agents.bdi.goals.UpdateBelief
 import it.unibo.jakta.agents.bdi.intentions.Intention
 import it.unibo.jakta.agents.bdi.intentions.IntentionPool
+import it.unibo.jakta.agents.bdi.messages.AskOne
 import it.unibo.jakta.agents.bdi.messages.Tell
 import it.unibo.jakta.agents.bdi.plans.Plan
 import it.unibo.jakta.agents.bdi.plans.PlanLibrary
@@ -351,6 +352,10 @@ internal data class AgentLifecycleImpl(
                     val retrieveResult = newBeliefBase.add(Belief.fromMessageSource(message.from, message.value))
                     newBeliefBase = retrieveResult.updatedBeliefBase
                     generateEvents(newEvents, retrieveResult.modifiedBeliefs)
+                }
+                is AskOne -> {
+                    val belief = Belief.fromMessageSource(message.from, message.value)
+                    newEvents + Event.ofTestGoalInvocation(Test.of(belief))
                 }
             }
             cachedEffects = cachedEffects + PopMessage(this.agent.name)

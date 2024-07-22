@@ -1,7 +1,10 @@
 package it.unibo.jakta.agents.bdi.actions
 
 import it.unibo.jakta.agents.bdi.actions.impl.AbstractExternalAction
+import it.unibo.jakta.agents.bdi.beliefs.Belief
+import it.unibo.jakta.agents.bdi.events.Event
 import it.unibo.jakta.agents.bdi.messages.Achieve
+import it.unibo.jakta.agents.bdi.messages.AskOne
 import it.unibo.jakta.agents.bdi.messages.Message
 import it.unibo.jakta.agents.bdi.messages.Tell
 import it.unibo.tuprolog.core.Atom
@@ -21,6 +24,13 @@ object ExternalActions {
                         receiver.value,
                         Message(request.sender, Achieve, message),
                     )
+                    "askOne" -> {
+                        sendMessage(receiver.value, Message(request.sender, AskOne, message))
+                        if (request.arguments.size > 3) {
+                            val expected = Belief.fromMessageSource(receiver.value, message)
+                            suspendUntil(Event.ofBeliefBaseAddition(expected), request.arguments[3])
+                        }
+                    }
                 }
             }
         }
