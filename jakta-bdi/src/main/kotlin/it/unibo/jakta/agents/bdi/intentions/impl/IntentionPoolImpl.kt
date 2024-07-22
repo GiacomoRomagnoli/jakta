@@ -4,6 +4,7 @@ import it.unibo.jakta.agents.bdi.events.Event
 import it.unibo.jakta.agents.bdi.intentions.Intention
 import it.unibo.jakta.agents.bdi.intentions.IntentionID
 import it.unibo.jakta.agents.bdi.intentions.IntentionPool
+import it.unibo.tuprolog.unify.Unificator.Companion.mguWith
 
 internal data class IntentionPoolImpl(
     val from: Map<IntentionID, Intention> = emptyMap(),
@@ -24,8 +25,11 @@ internal data class IntentionPoolImpl(
     override fun resumeAll(waitingFor: Event): IntentionPool {
         var res: IntentionPool = this
         this.values.forEach {
-            if (it.waitingFor == waitingFor) {
-                res = res.updateIntention(it.copy(waitingFor = null))
+            if (it.waitingFor != null) {
+                val substitution = it.waitingFor!!.trigger.value.mguWith(waitingFor.trigger.value)
+                if (substitution.isSuccess) {
+                    res = res.updateIntention(it.copy(waitingFor = null).applySubstitution(substitution))
+                }
             }
         }
         return res
