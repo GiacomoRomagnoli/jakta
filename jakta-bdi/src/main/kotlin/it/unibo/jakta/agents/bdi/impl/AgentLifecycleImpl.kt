@@ -156,15 +156,10 @@ internal data class AgentLifecycleImpl(
                 ),
             )
             return if (externalResponse.substitution.isSuccess) {
-                if (newIntention.recordStack.isNotEmpty()) {
-                    newIntention = newIntention.applySubstitution(externalResponse.substitution)
-                }
+                newIntention = newIntention.applySubstitution(externalResponse.substitution)
                 val changes = externalResponse.effects.filterIsInstance<SuspendCurrentUntil>()
-                val newContext = applyEffects(context, changes, intention)
-                ExecutionResult(
-                    newContext.copy(intentions = newContext.intentions.updateIntention(newIntention)),
-                    externalResponse.effects - changes.toSet(),
-                )
+                val newContext = applyEffects(context, changes, newIntention)
+                ExecutionResult(newContext, externalResponse.effects - changes.toSet())
             } else {
                 ExecutionResult(failAchievementGoal(intention, context))
             }
@@ -300,7 +295,8 @@ internal data class AgentLifecycleImpl(
                 is Pause -> controller?.pause()
                 is Sleep -> controller?.sleep(it.millis)
                 is Stop -> controller?.stop()
-                is SuspendCurrentUntil -> newIntentions.updateIntention(current.copy(waitingFor = it.event))
+                is SuspendCurrentUntil ->
+                    newIntentions = newIntentions.updateIntention(current.copy(waitingFor = it.event))
             }
         }
         return context.copy(
