@@ -1,3 +1,31 @@
+## [0.11.16](https://github.com/jakta-bdi/jakta/compare/v0.11.15...v0.11.16) (2024-07-18)
+
+
+### Bug Fixes
+
+* **deps:** update plugin multijvmtesting to v1.1.1 ([f61a736](https://github.com/jakta-bdi/jakta/commit/f61a736ba6e279afd12043e952d658c4b9d28e72))
+
+## [0.11.15](https://github.com/jakta-bdi/jakta/compare/v0.11.14...v0.11.15) (2024-07-18)
+
+
+### Bug Fixes
+
+* **deps:** update plugin kotlin-qa to v0.63.0 ([fc47d68](https://github.com/jakta-bdi/jakta/commit/fc47d682fd2f49b25a55d369a6e70f5568c14373))
+
+## [0.11.14](https://github.com/jakta-bdi/jakta/compare/v0.11.13...v0.11.14) (2024-07-17)
+
+
+### Bug Fixes
+
+* **deps:** update plugin publishoncentral to v5.1.4 ([e6f37b2](https://github.com/jakta-bdi/jakta/commit/e6f37b217c25fdd34cd3fa300b9305e2968d260e))
+
+## [0.11.13](https://github.com/jakta-bdi/jakta/compare/v0.11.12...v0.11.13) (2024-07-17)
+
+
+### Bug Fixes
+
+* **deps:** update plugin kotlin-qa to v0.62.4 ([cf5fcbf](https://github.com/jakta-bdi/jakta/commit/cf5fcbf099f50808b17740ee10d0f9b956961927))
+
 ## [0.11.12](https://github.com/jakta-bdi/jakta/compare/v0.11.11...v0.11.12) (2024-07-17)
 
 
