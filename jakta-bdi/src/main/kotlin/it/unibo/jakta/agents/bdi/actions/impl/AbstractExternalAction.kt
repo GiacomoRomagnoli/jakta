@@ -15,7 +15,6 @@ import it.unibo.jakta.agents.bdi.actions.effects.SuspendCurrentUntil
 import it.unibo.jakta.agents.bdi.actions.effects.UpdateData
 import it.unibo.jakta.agents.bdi.events.Event
 import it.unibo.jakta.agents.bdi.messages.Message
-import it.unibo.tuprolog.core.Term
 import it.unibo.tuprolog.solve.Signature
 
 abstract class AbstractExternalAction(override val signature: Signature) : ExternalAction,
@@ -51,8 +50,8 @@ abstract class AbstractExternalAction(override val signature: Signature) : Exter
         effects.add(UpdateData(newData))
     }
 
-    override fun suspendUntil(event: Event, response: Term?) {
-        effects.add(SuspendCurrentUntil(event, response))
+    override fun suspendUntil(event: Event) {
+        effects.add(SuspendCurrentUntil(event))
     }
 
     override fun toString(): String = "ExternalAction(${signature.name}, ${signature.arity})"

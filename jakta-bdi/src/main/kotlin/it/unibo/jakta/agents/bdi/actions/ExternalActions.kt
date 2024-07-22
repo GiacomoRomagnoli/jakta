@@ -20,16 +20,11 @@ object ExternalActions {
                 val message = request.arguments[2].castToStruct()
                 when (type.value) {
                     "tell" -> sendMessage(receiver.value, Message(request.sender, Tell, message))
-                    "achieve" -> sendMessage(
-                        receiver.value,
-                        Message(request.sender, Achieve, message),
-                    )
+                    "achieve" -> sendMessage(receiver.value, Message(request.sender, Achieve, message))
                     "askOne" -> {
                         sendMessage(receiver.value, Message(request.sender, AskOne, message))
-                        if (request.arguments.size > 3) {
-                            val expected = Belief.fromMessageSource(receiver.value, message)
-                            suspendUntil(Event.ofBeliefBaseAddition(expected), request.arguments[3])
-                        }
+                        val expected = Belief.fromMessageSource(receiver.value, message)
+                        suspendUntil(Event.ofBeliefBaseAddition(expected))
                     }
                 }
             }

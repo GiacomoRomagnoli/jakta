@@ -3,7 +3,6 @@ package it.unibo.jakta.agents.bdi.actions.effects
 import it.unibo.jakta.agents.bdi.Agent
 import it.unibo.jakta.agents.bdi.events.Event
 import it.unibo.jakta.agents.bdi.messages.Message
-import it.unibo.tuprolog.core.Term
 
 sealed interface EnvironmentChange : SideEffect
 data class SpawnAgent(val agent: Agent) : EnvironmentChange
@@ -19,4 +18,4 @@ data class PopMessage(val agentName: String) : EnvironmentChange
 data class AddData(val key: String, val value: Any) : EnvironmentChange
 data class RemoveData(val key: String) : EnvironmentChange
 data class UpdateData(val newData: Map<String, Any>) : EnvironmentChange
-data class SuspendCurrentUntil(val event: Event, val response: Term?) : AgentChange, EnvironmentChange
+data class SuspendCurrentUntil(val event: Event) : AgentChange, EnvironmentChange
