@@ -122,13 +122,9 @@ internal data class AgentLifecycleImpl(
             )
             // Apply substitution
             return if (internalResponse.substitution.isSuccess) {
-                if (newIntention.recordStack.isNotEmpty()) {
-                    newIntention = newIntention.applySubstitution(internalResponse.substitution)
-                }
-                val newContext = applyEffects(context, internalResponse.effects, intention)
-                ExecutionResult(
-                    newContext.copy(intentions = newContext.intentions.updateIntention(newIntention)),
-                )
+                newIntention = newIntention.applySubstitution(internalResponse.substitution)
+                val newContext = applyEffects(context, internalResponse.effects, newIntention)
+                ExecutionResult(newContext)
             } else {
                 ExecutionResult(failAchievementGoal(intention, context))
             }
@@ -268,7 +264,7 @@ internal data class AgentLifecycleImpl(
         var newBeliefBase = context.beliefBase
         var newEvents = context.events
         var newPlans = context.planLibrary
-        var newIntentions = context.intentions
+        var newIntentions = context.intentions.updateIntention(current)
         effects.forEach {
             when (it) {
                 is BeliefChange -> {
