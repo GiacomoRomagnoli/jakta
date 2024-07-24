@@ -25,7 +25,7 @@ internal data class IntentionPoolImpl(
     override fun resumeAll(waitingFor: Event): IntentionPool {
         var res: IntentionPool = this
         this.values.forEach {
-            if (it.waitingFor != null) {
+            if (it.waitingFor != null && it.waitingFor!!.trigger::class == waitingFor.trigger::class) {
                 val substitution = it.waitingFor!!.trigger.value.mguWith(waitingFor.trigger.value)
                 if (substitution.isSuccess) {
                     res = res.updateIntention(it.copy(waitingFor = null).applySubstitution(substitution))
