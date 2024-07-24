@@ -31,6 +31,7 @@ import it.unibo.jakta.agents.bdi.events.BeliefBaseRemoval
 import it.unibo.jakta.agents.bdi.events.Event
 import it.unibo.jakta.agents.bdi.events.EventQueue
 import it.unibo.jakta.agents.bdi.events.TestGoalFailure
+import it.unibo.jakta.agents.bdi.events.TestGoalTrigger
 import it.unibo.jakta.agents.bdi.executionstrategies.ExecutionResult
 import it.unibo.jakta.agents.bdi.goals.Achieve
 import it.unibo.jakta.agents.bdi.goals.Act
@@ -51,6 +52,8 @@ import it.unibo.jakta.agents.bdi.messages.Tell
 import it.unibo.jakta.agents.bdi.plans.Plan
 import it.unibo.jakta.agents.bdi.plans.PlanLibrary
 import it.unibo.jakta.agents.fsm.Activity
+import it.unibo.tuprolog.core.Atom
+import it.unibo.tuprolog.core.Struct
 
 internal data class AgentLifecycleImpl(
     private var agent: Agent,
@@ -94,7 +97,25 @@ internal data class AgentLifecycleImpl(
 
     override fun assignPlanToIntention(event: Event, plan: Plan, intentions: IntentionPool) =
         when (event.isExternal()) {
-            true -> Intention.of(plan)
+            true -> {
+                when (event.trigger) {
+                    is TestGoalTrigger -> {
+                        val send = Struct.of(
+                            "send",
+                            plan.trigger.value[0].castToStruct()[0],
+                            Atom.of("tell"),
+                            plan.trigger.value.setArgs(plan.trigger.value.args - plan.trigger.value.args[0]),
+                        )
+                        val newPlan = Plan.ofTestGoalInvocation(
+                            plan.trigger.value,
+                            plan.goals + Act.of(send),
+                            plan.guard,
+                        )
+                        Intention.of(newPlan)
+                    }
+                    else -> Intention.of(plan)
+                }
+            }
             false -> {
                 when (event.trigger) {
                     is AchievementGoalFailure, is TestGoalFailure ->
